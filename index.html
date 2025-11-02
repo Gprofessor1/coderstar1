@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무한매력권짱쌤의 초등 코딩 & AI 성장 로드맵</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Stone, Amber, Teal/Sky) -->
+    <!-- Application Structure Plan: The application is designed as an interactive roadmap. This structure visually represents the curriculum's step-by-step progression, making it more intuitive and engaging than a simple list or tabs. A main navigation bar allows users to click on any grade (1-6). This action dynamically updates a central content panel to display that grade's specific details (goals, activities, competencies) without a page reload. This single-page application (SPA) approach provides a seamless and focused user experience, encouraging exploration of the entire 6-year journey. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method.
+    1. Curriculum Stages -> Organize/Compare -> Interactive Roadmap Navigation -> Click to update content -> Visually represents the learning path and serves as the primary navigation, making the structure intuitive. -> HTML/CSS/JS.
+    2. Grade Details (Goals, Activities) -> Inform -> Dynamically updated content cards -> Content appears on nav click -> Organizes detailed information cleanly for each stage, avoiding clutter. -> HTML/CSS/JS.
+    3. Learned Competencies -> Compare/Inform -> Styled "Tag Cloud" Badges -> Static display per grade -> More visually engaging and scannable than a simple bullet list for quick skill assessment. -> HTML/CSS.
+    4. Competency Focus -> Compare/Analyze -> Interactive Radar Chart -> User selects a grade from a dropdown to update the chart -> Provides a data-driven, analytical view of how skill focus shifts across grades, adding significant interactive value. -> Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            padding-bottom: 50px; /* 고정 푸터를 위한 하단 여백 추가 */
+        }
+        .roadmap-step {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .roadmap-step.active {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .content-panel {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .content-panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 80vw;
+            max-width: 500px;
+            max-height: 400px;
+        }
+        /* 사용자가 요청한 고정 푸터 스타일 */
+        .fixed-credit {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.7); /* 어두운 반투명 배경 */
+            color: white;
+            font-size: 12px;
+            font-family: monospace; /* 텍스트 형식에 맞춰 모노스페이스 폰트 사용 */
+            border-radius: 10px 10px 0 0; /* 상단 모서리를 둥글게 */
+            z-index: 50; /* 다른 요소들 위에 표시 */
+            white-space: nowrap; /* 줄바꿈 방지 */
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        <header class="text-center mb-10 md:mb-16">
+            <h1 class="text-3xl md:text-5xl font-bold text-sky-800 mb-2">
+                <span class="text-2xl md:text-3xl font-bold block">🚀 무한매력권짱쌤의</span>
+                초등 코딩 & AI 성장 로드맵
+            </h1>
+            <p class="text-lg md:text-xl text-stone-600">놀이에서 창작으로, 1학년부터 6학년까지 이어지는 완성형 커리큘럼</p>
+        </header>
+
+        <main>
+            <section id="roadmap-nav" class="mb-10 md:mb-16">
+                 <div class="flex flex-col md:flex-row justify-center items-center md:space-x-4 space-y-4 md:space-y-0">
+                    <div data-grade="1" class="roadmap-step bg-white p-4 rounded-lg shadow-md w-full md:w-1/6 text-center border-b-4 border-amber-400">
+                        <div class="text-4xl mb-2">🐾</div>
+                        <h3 class="font-bold text-stone-700">1학년</h3>
+                        <p class="text-sm text-stone-500">언플러그드</p>
+                    </div>
+                    <div class="hidden md:block text-2xl text-stone-300 font-light">→</div>
+                    <div data-grade="2" class="roadmap-step bg-white p-4 rounded-lg shadow-md w-full md:w-1/6 text-center border-b-4 border-orange-400">
+                        <div class="text-4xl mb-2">🎨</div>
+                        <h3 class="font-bold text-stone-700">2학년</h3>
+                        <p class="text-sm text-stone-500">스크래치Jr</p>
+                    </div>
+                    <div class="hidden md:block text-2xl text-stone-300 font-light">→</div>
+                    <div data-grade="3" class="roadmap-step bg-white p-4 rounded-lg shadow-md w-full md:w-1/6 text-center border-b-4 border-teal-400">
+                        <div class="text-4xl mb-2">📱</div>
+                        <h3 class="font-bold text-stone-700">3학년</h3>
+                        <p class="text-sm text-stone-500">옥토스튜디오</p>
+                    </div>
+                    <div class="hidden md:block text-2xl text-stone-300 font-light">→</div>
+                    <div data-grade="4" class="roadmap-step bg-white p-4 rounded-lg shadow-md w-full md:w-1/6 text-center border-b-4 border-blue-400">
+                        <div class="text-4xl mb-2">🧩</div>
+                        <h3 class="font-bold text-stone-700">4학년</h3>
+                        <p class="text-sm text-stone-500">스크래치</p>
+                    </div>
+                    <div class="hidden md:block text-2xl text-stone-300 font-light">→</div>
+                    <div data-grade="5" class="roadmap-step bg-white p-4 rounded-lg shadow-md w-full md:w-1/6 text-center border-b-4 border-indigo-400">
+                        <div class="text-4xl mb-2">🧠</div>
+                        <h3 class="font-bold text-stone-700">5학년</h3>
+                        <p class="text-sm text-stone-500">AI 모델 체험</p>
+                    </div>
+                     <div class="hidden md:block text-2xl text-stone-300 font-light">→</div>
+                    <div data-grade="6" class="roadmap-step bg-white p-4 rounded-lg shadow-md w-full md:w-1/6 text-center border-b-4 border-purple-400">
+                        <div class="text-4xl mb-2">🧑‍🚀</div>
+                        <h3 class="font-bold text-stone-700">6학년</h3>
+                        <p class="text-sm text-stone-500">AI 창작/윤리</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-display" class="bg-white p-6 md:p-10 rounded-2xl shadow-xl min-h-[400px]">
+            </section>
+            
+            <section id="competency-analysis" class="mt-10 md:mt-16 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-sky-800 mb-4">학년별 역량 분석</h2>
+                <p class="text-stone-600 mb-6 max-w-2xl mx-auto">각 학년별 교육 과정이 어떤 역량을 중점적으로 길러주는지 확인해보세요. 아래 메뉴에서 학년을 선택하면 차트가 업데이트됩니다.</p>
+                <div class="flex justify-center mb-6">
+                    <select id="grade-selector" class="p-2 border border-stone-300 rounded-lg shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500">
+                        <option value="1">1학년</option>
+                        <option value="2">2학년</option>
+                        <option value="3">3학년</option>
+                        <option value="4">4학년</option>
+                        <option value="5">5학년</option>
+                        <option value="6">6학년</option>
+                    </select>
+                </div>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl">
+                    <div class="chart-container">
+                        <canvas id="competencyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 md:mt-20 text-stone-500">
+            <p>&copy; 2025 Interactive Curriculum Explorer. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 고정 저작권 텍스트 -->
+    <div class="fixed-credit">
+        /* Made BLACKHOLE GWONZZANG😍blog.naver.com/banggahj */
+    </div>
+
+    <script>
+        const curriculumData = {
+            1: {
+                title: "1학년: 놀이로 만나는 컴퓨터와 코딩 (Unplugged Play)",
+                tagline: "컴퓨터와 친구가 되고, 온몸으로 코딩의 즐거움을 깨닫다!",
+                goal: "컴퓨터와 디지털 도구에 대한 두려움을 없애고, 신체 놀이를 통해 코딩의 가장 기초적인 개념(순서, 명령어)과 친해집니다.",
+                activities: [
+                    { name: "컴퓨터 탐험대", desc: "노래와 율동으로 컴퓨터 각 부분의 이름과 역할을 배웁니다." },
+                    { name: "나는 로봇!", desc: "친구에게 명령어를 내려 목표 지점까지 이동시키며 알고리즘의 원리를 체험합니다." },
+                    { name: "컵 쌓기 챌린지", desc: "그림으로 된 명령어 카드를 순서대로 배열하고 따라하며 '순차'의 중요성을 배웁니다." }
+                ],
+                competencies: ["기초 컴퓨터 리터러시", "순차적 사고", "문제 해결 능력", "협업 능력"]
+            },
+            2: {
+                title: "2학년: 손끝으로 그리는 나의 첫 이야기 (ScratchJr)",
+                tagline: "상상 속 이야기를 움직이는 애니메이션으로 만들며 창의력을 표현하다!",
+                goal: "1학년 때 놀이로 익힌 코딩 개념을 디지털 세상에서 처음으로 구현합니다. 글자 없는 그림 블록을 조합하며 코딩에 대한 자신감을 얻습니다.",
+                activities: [
+                    { name: "나의 아바타 만들기", desc: "나를 닮은 캐릭터를 만들고 움직여보며 기본적인 블록 사용법을 익힙니다." },
+                    { name: "움직이는 동화책", desc: "여러 페이지를 연결하고 캐릭터에 목소리를 녹음하여 나만의 짧은 동화를 만듭니다." }
+                ],
+                competencies: ["디지털 도구 활용", "창의적 표현력", "스토리텔링", "순차/반복 개념"]
+            },
+            3: {
+                title: "3학년: 현실과 만나는 코딩 탐험 (OctoStudio)",
+                tagline: "스마트폰을 흔들고 소리치며, 코딩이 현실과 상호작용하는 마법을 체험하다!",
+                goal: "화면 속 코딩을 넘어, 스마트폰의 센서(기울기, 마이크 등)를 활용해 현실 세계와 소통하는 코딩의 원리를 몸으로 느낍니다.",
+                activities: [
+                    { name: "나만의 악기 만들기", desc: "스마트폰을 흔들거나 특정 방향으로 기울이면 각기 다른 소리가 나는 나만의 악기를 디자인합니다." },
+                    { name: "내 얼굴 게임 캐릭터", desc: "내 얼굴을 찍어 캐릭터로 만들고, '점프!'라고 외치면 캐릭터가 점프하는 반응형 게임을 만듭니다." }
+                ],
+                competencies: ["인터랙티브 사고", "센서 활용 능력", "원인과 결과 추론", "창의적 실험 정신"]
+            },
+            4: {
+                title: "4학년: 논리로 완성하는 나만의 게임 (Scratch)",
+                tagline: "복잡한 규칙과 논리를 조합하여 상상했던 게임과 애니메이션을 완성하다!",
+                goal: "본격적인 블록 코딩의 세계로 들어서, 변수, 조건문 등 핵심 프로그래밍 개념을 활용하여 자신만의 아이디어를 체계적으로 구현합니다.",
+                activities: [
+                    { name: "장애물 피하기 게임", desc: "변수를 활용해 '점수'를 만들고, 조건문을 사용해 장애물에 닿으면 게임이 끝나도록 프로그래밍합니다." },
+                    { name: "리듬 게임 만들기", desc: "'신호 주고받기' 블록을 활용하여 음악에 맞춰 노트가 내려오고, 정확한 타이밍에 키를 누르면 점수를 얻는 게임을 만듭니다." }
+                ],
+                competencies: ["시스템적 사고", "논리적 문제 해결", "프로그래밍 핵심 개념", "변수/조건문/함수"]
+            },
+            5: {
+                title: "5학년: 똑똑한 인공지능 트레이너 되기 (AI 모델 체험)",
+                tagline: "인공지능의 원리를 직접 체험하고, 나만의 똑똑한 AI를 훈련시키다!",
+                goal: "AI를 사용하는 것을 넘어, AI가 어떻게 세상을 인식하고 학습하는지 그 원리를 직접 체험합니다. 내 몸과 사물을 알아보는 AI를 직접 만들며 성취감을 느낍니다.",
+                activities: [
+                    { name: "몸으로 게임하기", desc: "'만세', '오른손 들기' 등 나의 자세를 AI에게 학습시킨 후, 웹캠 앞에서 몸을 움직여 스크래치 게임을 조종합니다." },
+                    { name: "스마트 분리수거 도우미", desc: "캔, 플라스틱, 종이를 AI에게 학습시켜, 카메라에 비친 재활용품을 자동으로 구별해주는 프로그램을 만듭니다." }
+                ],
+                competencies: ["인공지능 원리 이해", "데이터 중요성 인식", "문제 해결 응용력", "피지컬 컴퓨팅"]
+            },
+            6: {
+                title: "6학년: 인공지능과 협업하는 크리에이터 (AI 활용 창작 & 윤리)",
+                tagline: "인공지능을 단순한 도구가 아닌, 창의적인 협업 파트너로 활용하고, 기술을 올바르게 사용하는 지혜를 기르다!",
+                goal: "최신 생성형 AI를 활용해 창의성의 한계를 넓히고, 동시에 인공지능이 우리 사회에 미치는 영향을 토론하며 비판적 사고력과 디지털 시민성을 함양합니다.",
+                activities: [
+                    { name: "AI 아티스트 & 작가", desc: "이미지 생성 AI로 게임 캐릭터를 그리고, 그 캐릭터가 주인공인 스토리를 만들어 스크래치나 영상으로 표현합니다." },
+                    { name: "AI 윤리 탐정단", desc: "AI의 편향성이나 가짜뉴스 사례를 분석하고, '우리 학교에 AI 로봇을 도입한다면 어떤 규칙이 필요할까?'와 같은 주제로 모의 토론을 진행합니다." }
+                ],
+                competencies: ["창의적 융합 능력", "비판적 사고력", "디지털 리터러시", "윤리적 판단력"]
+            }
+        };
+
+        const chartData = {
+            labels: ['논리적 사고', '창의적 표현', '디지털 활용', '협업 능력', '현실 연동'],
+            datasets: {
+                1: { label: '1학년', data: [3, 2, 1, 4, 2], color: 'rgba(251, 191, 36, 0.4)' },
+                2: { label: '2학년', data: [3, 5, 4, 2, 1], color: 'rgba(251, 146, 60, 0.4)' },
+                3: { label: '3학년', data: [3, 4, 5, 2, 5], color: 'rgba(45, 212, 191, 0.4)' },
+                4: { label: '4학년', data: [5, 4, 5, 3, 2], color: 'rgba(96, 165, 250, 0.4)' },
+                5: { label: '5학년', data: [4, 4, 5, 2, 5], color: 'rgba(129, 140, 248, 0.4)' },
+                6: { label: '6학년', data: [4, 5, 5, 4, 3], color: 'rgba(167, 139, 250, 0.4)' }
+            }
+        };
+
+        const contentDisplay = document.getElementById('content-display');
+        const roadmapNav = document.getElementById('roadmap-nav');
+        const gradeSelector = document.getElementById('grade-selector');
+        const competencyChartCanvas = document.getElementById('competencyChart').getContext('2d');
+        let competencyChart;
+
+        function displayGradeContent(grade) {
+            const data = curriculumData[grade];
+            if (!data) return;
+
+            const competenciesHTML = data.competencies.map(c => 
+                `<span class="bg-sky-100 text-sky-800 text-sm font-medium mr-2 mb-2 px-3 py-1 rounded-full">${c}</span>`
+            ).join('');
+
+            const activitiesHTML = data.activities.map(a => `
+                <div class="mb-4">
+                    <h4 class="font-bold text-stone-700">${a.name}</h4>
+                    <p class="text-stone-600">${a.desc}</p>
+                </div>
+            `).join('');
+
+            contentDisplay.innerHTML = `
+                <div class="content-panel active">
+                    <h2 class="text-2xl md:text-3xl font-bold text-sky-800 mb-2">${data.title}</h2>
+                    <p class="text-lg text-stone-600 italic mb-6">"${data.tagline}"</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-bold text-xl mb-3 text-stone-800 border-b-2 border-amber-400 pb-2">핵심 목표</h3>
+                            <p class="text-stone-700 leading-relaxed">${data.goal}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl mb-3 text-stone-800 border-b-2 border-teal-400 pb-2">주요 활동</h3>
+                            ${activitiesHTML}
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="font-bold text-xl mb-4 text-stone-800 border-b-2 border-indigo-400 pb-2">배우는 역량</h3>
+                        <div class="flex flex-wrap">
+                            ${competenciesHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateActiveStep(grade) {
+            document.querySelectorAll('.roadmap-step').forEach(step => {
+                step.classList.remove('active');
+                if (step.dataset.grade === grade) {
+                    step.classList.add('active');
+                }
+            });
+        }
+        
+        function createOrUpdateChart(grade) {
+            const selectedData = chartData.datasets[grade];
+            if (competencyChart) {
+                competencyChart.data.datasets[0].data = selectedData.data;
+                competencyChart.data.datasets[0].label = selectedData.label;
+                competencyChart.data.datasets[0].backgroundColor = selectedData.color;
+                competencyChart.data.datasets[0].borderColor = selectedData.color.replace('0.4', '1');
+                competencyChart.update();
+            } else {
+                competencyChart = new Chart(competencyChartCanvas, {
+                    type: 'radar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: selectedData.label,
+                            data: selectedData.data,
+                            backgroundColor: selectedData.color,
+                            borderColor: selectedData.color.replace('0.4', '1'),
+                            pointBackgroundColor: selectedData.color.replace('0.4', '1'),
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: selectedData.color.replace('0.4', '1')
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 5,
+                                pointLabels: {
+                                    font: {
+                                        size: 14,
+                                        family: "'Noto Sans KR', sans-serif"
+                                    }
+                                },
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        roadmapNav.addEventListener('click', (e) => {
+            const step = e.target.closest('.roadmap-step');
+            if (step) {
+                const grade = step.dataset.grade;
+                displayGradeContent(grade);
+                updateActiveStep(grade);
+                createOrUpdateChart(grade);
+                gradeSelector.value = grade;
+            }
+        });
+        
+        gradeSelector.addEventListener('change', (e) => {
+            const grade = e.target.value;
+            createOrUpdateChart(grade);
+            displayGradeContent(grade);
+            updateActiveStep(grade);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayGradeContent('1');
+            updateActiveStep('1');
+            createOrUpdateChart('1');
+        });
+    </script>
+</body>
+</html>
+
+
+
+
